@@ -1,0 +1,22 @@
+---
+title: gosu-ring
+
+---
+
+## gosu-ring
+
+No time to write about it, just have a look. It's like Secret of Mana.
+
+![the menu at rest](images/menu-coffee.png)
+![with icon rotation off](images/menu-no-rotation.png)
+![with icon rotation](images/menu-rotation.png)
+
+### resources
+
+* [main repository][REPO]
+* [issue tracker][ISSU]
+* [wiki][WIKI]
+
+[REPO]: http://github.com/erisdiscord/gosu-ring
+[ISSU]: http://github.com/erisdiscord/gosu-ring/issues
+[WIKI]: http://wiki.github.com/erisdiscord/gosu-ring
