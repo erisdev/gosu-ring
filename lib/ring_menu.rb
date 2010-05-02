@@ -31,18 +31,23 @@ class RingMenu < Chingu::GameState
   end
   
   DEFAULTS = {
-    :opaque => true,
-    :radius => 50,
-    :z_base => 100
+    :opaque   => true,
+    :rotation => false,
+    :radius   => 50,
+    :z_base   => 100
   }
   
   def initialize options = {}, &block
     super
     
     options = DEFAULTS.merge options
-    @opaque = options[:opaque]
-    @radius = options[:radius]
-    @z_base = options[:z_base]
+    
+    @opaque   = options[:opaque]
+    @rotation = options[:icon_rotation]
+    @radius   = options[:radius]
+    @z_base   = options[:z_base]
+    
+    @rotation = 1 if @rotation and not Numeric === @rotate
     
     @caption = Chingu::Text.new '', :zorder => @z_base + Z::CAPTION
     @items   = []
@@ -77,8 +82,9 @@ class RingMenu < Chingu::GameState
   
   def background bg
     @background = case bg
-    when Gosu::Color  then bg
-    when *COLORS.keys then COLORS[bg]
+    when Gosu::Color then bg
+    when Hash        then bg.merge :zorder => @z_base + Z::BACKGROUND
+    when Array       then { :zorder => @z_base + Z::BACKGROUND, :colors => bg }
     else Gosu::Color.new(bg)
     end
   end
@@ -151,6 +157,10 @@ class RingMenu < Chingu::GameState
     @items.each do |icon|
       icon.x = cx + @radius * Math.sin(this_angle)
       icon.y = cy - @radius * Math.cos(this_angle)
+      
+      # turn icons if desired
+      icon.angle = @rotation * Gosu.radians_to_degrees(this_angle) if @rotation
+      
       this_angle += angle_diff
     end
   end
