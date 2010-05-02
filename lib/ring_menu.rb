@@ -5,7 +5,7 @@ class RingMenu < Chingu::GameState
     attr_accessor :title
     
     def initialize title, image, options = {}, &block
-      super options.merge(:image => image)
+      super options.merge(:image => image, :center => 0.5)
       @title  = title
       @action = block
       
@@ -27,9 +27,13 @@ class RingMenu < Chingu::GameState
     options = DEFAULTS.merge options
     @radius = options[:radius]
     
-    @items = []
-    @index = 0
-    @step  = 0
+    @caption = Chingu::Text.new ''
+    @items   = []
+    @index   = 0
+    @step    = 0
+    
+    # FIXME when chingu is updated, just pass :center => 0.5
+    @caption.center = 0.5
     
     self.input = {
       :left  => :left!,  :holding_left  => :left?,
@@ -39,7 +43,10 @@ class RingMenu < Chingu::GameState
     }
     
     yield self if block_given?
+    update_caption!
   end
+  
+  # constructor methods
   
   def item caption, image, options = {}, &block
     # FIXME when chingu is updated, this should just use the create method
@@ -48,6 +55,23 @@ class RingMenu < Chingu::GameState
     @count = @items.count
   end
   
+  def font name, height
+    name, height = height, name if Numeric === name
+    
+    # FIXME would be great to do this, but chingu doesn't allow it (yet)
+    # @caption.font   = name   if name
+    # @caption.height = height if height
+    
+    # do it the hard way!
+    @caption.instance_eval do
+      @font   = name   if name
+      @height = height if height
+      create_image
+    end
+  end
+  
+  # input methods
+  
   def left?; left! if @index == @step end
   def left!
     @index -= 1
@@ -55,6 +79,7 @@ class RingMenu < Chingu::GameState
       @index += @count
       @step  += @count
     end
+    update_caption!
   end
   
   def right?; right! if @index == @step end
@@ -64,11 +89,14 @@ class RingMenu < Chingu::GameState
       @index -= @count
       @step  -= @count
     end
+    update_caption!
   end
   
   def perform_action
     @items[@index].perform_action
   end
+  
+  # chingu methods
   
   def update
     super
@@ -85,14 +113,27 @@ class RingMenu < Chingu::GameState
     cx = $window.width / 2
     cy = $window.height / 2
     
+    # calculate angles for icons
     angle_diff = 2 * Math::PI / @count
     this_angle = angle_diff * @step
     
+    # position caption and icons
+    @caption.x = cx
+    @caption.y = cy
     @items.each do |icon|
       icon.x = cx + @radius * Math.sin(this_angle)
       icon.y = cy - @radius * Math.cos(this_angle)
       this_angle += angle_diff
     end
+  end
+  
+  def update_caption!
+    @caption.text = @items[@index].title
+  end
+  
+  def draw
+    super
+    @caption.draw if @index == @step
   end
   
 end

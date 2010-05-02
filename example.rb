@@ -7,6 +7,7 @@ class RingDemo < Chingu::Window
     icons = Gosu::Image.load_tiles(self, 'data/icons.png', 16, 16, false)
     
     menu = RingMenu.new do |m|
+      m.font 'Helvetica', 24
       m.item('Quit',   icons[0]) { close }
       m.item('Plus',   icons[1])
       m.item('Minus',  icons[2])
