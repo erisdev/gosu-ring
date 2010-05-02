@@ -47,10 +47,15 @@ class RingMenu < Chingu::GameState
     @radius   = options[:radius]
     @z_base   = options[:z_base]
     
+    @cx = options[:x] || $window.width  / 2
+    @cy = options[:y] || $window.height / 2
+    
     @rotation = 1 if @rotation and not Numeric === @rotate
     @rotation = 0 if not @rotation
     
-    @caption = Chingu::Text.new '', :zorder => @z_base + Z::CAPTION
+    @caption = Chingu::Text.new '',
+      :zorder => @z_base + Z::CAPTION
+    
     @items   = []
     @index   = 0
     @step    = 0
@@ -145,19 +150,14 @@ class RingMenu < Chingu::GameState
       @step -= 0.1
     end
     
-    cx = $window.width / 2
-    cy = $window.height / 2
-    
     # calculate angles for icons
     angle_diff = 2 * Math::PI / @count
     this_angle = angle_diff * @step
     
-    # position caption and icons
-    @caption.x = cx
-    @caption.y = cy
+    # position icons
     @items.each do |icon|
-      icon.x = cx + @radius * Math.sin(this_angle)
-      icon.y = cy - @radius * Math.cos(this_angle)
+      icon.x = @cx + @radius * Math.sin(this_angle)
+      icon.y = @cy - @radius * Math.cos(this_angle)
       
       # turn icons if desired
       icon.angle = @rotation * this_angle.radians_to_degrees
@@ -168,6 +168,8 @@ class RingMenu < Chingu::GameState
   
   def update_caption!
     @caption.text = @items[@index].title
+    @caption.x    = @cx
+    @caption.y    = @cy
   end
   
   def draw
