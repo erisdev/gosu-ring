@@ -19,6 +19,11 @@ class RingMenu < Chingu::GameState
     
   end
   
+  COLORS = {}
+  Gosu::Color.constants.each do |name|
+    COLORS[name.downcase] = Gosu::Color.const_get name
+  end
+  
   DEFAULTS = { :radius => 50 }
   
   def initialize options = {}, &block
@@ -53,6 +58,14 @@ class RingMenu < Chingu::GameState
     @items << Icon.new(caption, image, options, &block)
     add_game_object @items.last
     @count = @items.count
+  end
+  
+  def background bg
+    @background = case bg
+    when Gosu::Color  then bg
+    when *COLORS.keys then COLORS[bg]
+    else Gosu::Color.new(bg)
+    end
   end
   
   def font name, height
@@ -132,6 +145,7 @@ class RingMenu < Chingu::GameState
   end
   
   def draw
+    $window.fill @background if @background
     super
     @caption.draw if @index == @step
   end
