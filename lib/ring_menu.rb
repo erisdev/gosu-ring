@@ -19,20 +19,32 @@ class RingMenu < Chingu::GameState
     
   end
   
+  module Z
+    BACKGROUND = 0
+    ICONS      = 1
+    CAPTION    = 2
+  end
+  
   COLORS = {}
   Gosu::Color.constants.each do |name|
     COLORS[name.downcase] = Gosu::Color.const_get name
   end
   
-  DEFAULTS = { :radius => 50 }
+  DEFAULTS = {
+    :opaque => true,
+    :radius => 50,
+    :z_base => 100
+  }
   
   def initialize options = {}, &block
     super
     
     options = DEFAULTS.merge options
+    @opaque = options[:opaque]
     @radius = options[:radius]
+    @z_base = options[:z_base]
     
-    @caption = Chingu::Text.new ''
+    @caption = Chingu::Text.new '', :zorder => @z_base + Z::CAPTION
     @items   = []
     @index   = 0
     @step    = 0
@@ -54,6 +66,9 @@ class RingMenu < Chingu::GameState
   # constructor methods
   
   def item caption, image, options = {}, &block
+    options.merge! \
+      :zorder => @z_base + Z::ICONS
+    
     # FIXME when chingu is updated, this should just use the create method
     @items << Icon.new(caption, image, options, &block)
     add_game_object @items.last
@@ -145,8 +160,16 @@ class RingMenu < Chingu::GameState
   end
   
   def draw
-    $window.fill @background if @background
     super
+    
+    # draw the previous game state if it is desired
+    previous_game_state.draw unless @opaque
+    
+    # draw the background
+    # FIXME zorder is ignored by chingu's GFX#fill for colors
+    $window.fill @background, @z_base + Z::BACKGROUND if @background
+    
+    # draw caption if selected item is at the front
     @caption.draw if @index == @step
   end
   
