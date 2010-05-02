@@ -23,6 +23,7 @@ class RingMenu < Chingu::GameState
     BACKGROUND = 0
     ICONS      = 1
     CAPTION    = 2
+    CURSOR     = 3
   end
   
   COLORS = {}
@@ -95,6 +96,13 @@ class RingMenu < Chingu::GameState
     end
   end
   
+  def cursor image, options = {}
+    options.merge! \
+      :image  => image,
+      :zorder => @z_base + Z::CURSOR
+    @cursor = Chingu::GameObject.new options
+  end
+  
   def font name, height
     name, height = height, name if Numeric === name
     
@@ -154,6 +162,12 @@ class RingMenu < Chingu::GameState
     angle_diff = 2 * Math::PI / @count
     this_angle = angle_diff * @step
     
+    # position cursor
+    if @cursor
+      @cursor.x = @cx
+      @cursor.y = @cy - @radius
+    end
+    
     # position icons
     @items.each do |icon|
       icon.x = @cx + @radius * Math.sin(this_angle)
@@ -181,6 +195,9 @@ class RingMenu < Chingu::GameState
     # draw the background
     # FIXME zorder is ignored by chingu's GFX#fill for colors
     $window.fill @background, @z_base + Z::BACKGROUND if @background
+    
+    # draw a cursor if there is one
+    @cursor.draw if @cursor
     
     # draw caption if selected item is at the front
     @caption.draw if @index == @step

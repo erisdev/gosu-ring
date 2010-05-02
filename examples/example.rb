@@ -25,11 +25,14 @@ class RingDemo < Chingu::Window
     
     Gosu.enable_undocumented_retrofication rescue nil
     
-    icons = Gosu::Image.load_tiles(self, 'data/icons.png', 16, 16, false)
+    cursor = Gosu::Image.new(self, 'data/cursor.png')
+    icons  = Gosu::Image.load_tiles(self, 'data/icons.png', 16, 16, false)
     
     @menu = RingMenu.new :radius => 60, :opaque => false, :icon_rotation => 1 do |m|
       m.background :from => 0xd0ffffff, :to => 0xd0000000
+      m.cursor cursor, :scale => 2
       m.font 'Helvetica', 24
+      
       m.item('Quit',    icons[0], :scale => 2) { close }
       m.item('Plus',    icons[1], :scale => 2)
       m.item('Minus',   icons[2], :scale => 2)
