@@ -10,7 +10,7 @@ class RingDemo < Chingu::Window
       m.item('Quit',   icons[0]) { close }
       m.item('Plus',   icons[1])
       m.item('Minus',  icons[2])
-      m.item('Coffee', icons[3])
+      m.item('Coffee', icons[3]) { puts 'Have some coffee.' }
     end
     
     push_game_state menu

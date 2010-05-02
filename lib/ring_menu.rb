@@ -8,6 +8,9 @@ class RingMenu < Chingu::GameState
       super options.merge(:image => image)
       @title  = title
       @action = block
+      
+      # make actionless icons transparent while preserving color
+      @color.alpha /= 2 unless @action
     end
     
     def perform_action
@@ -29,8 +32,8 @@ class RingMenu < Chingu::GameState
     @step  = 0
     
     self.input = {
-      :left  => :left!,
-      :right => :right!,
+      :left  => :left!,  :holding_left  => :left?,
+      :right => :right!, :holding_right => :right?,
       :return => :act!
     }
     
@@ -44,6 +47,7 @@ class RingMenu < Chingu::GameState
     @count = @items.count
   end
   
+  def left?; left! if @index == @step end
   def left!
     @index -= 1
     if @index < 0
@@ -52,6 +56,7 @@ class RingMenu < Chingu::GameState
     end
   end
   
+  def right?; right! if @index == @step end
   def right!
     @index += 1
     if @index >= @count
