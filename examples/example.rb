@@ -30,10 +30,12 @@ class RingDemo < Chingu::Window
     @menu = RingMenu.new :radius => 60, :opaque => false, :icon_rotation => 1 do |m|
       m.background :from => 0xd0ffffff, :to => 0xd0000000
       m.font 'Helvetica', 24
-      m.item('Quit',   icons[0], :scale => 2) { close }
-      m.item('Plus',   icons[1], :scale => 2)
-      m.item('Minus',  icons[2], :scale => 2)
-      m.item('Coffee', icons[3], :scale => 2) { puts 'Have some coffee.' }
+      m.item('Quit',    icons[0], :scale => 2) { close }
+      m.item('Plus',    icons[1], :scale => 2)
+      m.item('Minus',   icons[2], :scale => 2)
+      m.item('Coffee',  icons[3], :scale => 2) { @status.text = 'Have some coffee.' }
+      m.item('Feather', icons[4], :scale => 2) { @status.text = "It's a feather." }
+      m.item('Ball',    icons[5], :scale => 2)
     end
     
     @status = Chingu::Text.create 'Press R to change icon rotation',
