@@ -11,7 +11,7 @@ class RingMenu < Chingu::GameState
     end
     
     def perform_action
-      @action[self]
+      @action[self] if @action
     end
     
   end
