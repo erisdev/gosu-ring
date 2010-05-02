@@ -48,6 +48,7 @@ class RingMenu < Chingu::GameState
     @z_base   = options[:z_base]
     
     @rotation = 1 if @rotation and not Numeric === @rotate
+    @rotation = 0 if not @rotation
     
     @caption = Chingu::Text.new '', :zorder => @z_base + Z::CAPTION
     @items   = []
@@ -159,7 +160,7 @@ class RingMenu < Chingu::GameState
       icon.y = cy - @radius * Math.cos(this_angle)
       
       # turn icons if desired
-      icon.angle = @rotation * Gosu.radians_to_degrees(this_angle) if @rotation
+      icon.angle = @rotation * Gosu.radians_to_degrees(this_angle)
       
       this_angle += angle_diff
     end
