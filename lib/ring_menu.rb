@@ -160,7 +160,7 @@ class RingMenu < Chingu::GameState
       icon.y = cy - @radius * Math.cos(this_angle)
       
       # turn icons if desired
-      icon.angle = @rotation * Gosu.radians_to_degrees(this_angle)
+      icon.angle = @rotation * this_angle.radians_to_degrees
       
       this_angle += angle_diff
     end
