@@ -11,9 +11,10 @@ It's really cool, but you don't have to take my word for it. Check it out!
 ## REQUIREMENTS
 
 * [Gosu][] 0.7.19
-* [Chingu][CHGU], [my git HEAD][MYCH] if you want non-broken backgrounds for
-  your menus.
+* [Chingu][CHGU] [513c110][chingu@513c110] or newer if you want working
+  backgrounds.
 
 [GOSU]: http://libgosu.org/
 [CHGU]: http://ippa.se/chingu
-[MYCH]: http://github.com/erisdiscord/chingu
+
+[chingu@513c110]: http://github.com/erisdiscord/chingu/commit/513c1106eed7f6d7446e4e41c2c44a3d384afa9b
