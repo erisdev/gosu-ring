@@ -1,0 +1,19 @@
+# README
+## WHAT
+
+This is a ring menu for Ippa's Chingu game framework, similar to the menus
+found in Secret of Mana and many of its sequels. It is implemented as a game
+state and offers the option to draw itself on top of the previous state. See
+`examples` for more information.
+
+It's really cool, but you don't have to take my word for it. Check it out!
+
+## REQUIREMENTS
+
+* [Gosu][] 0.7.19
+* [Chingu][CHGU], [my git HEAD][MYCH] if you want non-broken backgrounds for
+  your menus.
+
+[GOSU]: http://libgosu.org/
+[CHGU]: http://ippa.se/chingu
+[MYCH]: http://github.com/erisdiscord/chingu
