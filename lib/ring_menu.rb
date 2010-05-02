@@ -34,7 +34,8 @@ class RingMenu < Chingu::GameState
     self.input = {
       :left  => :left!,  :holding_left  => :left?,
       :right => :right!, :holding_right => :right?,
-      :return => :act!
+      
+      :return => :perform_action
     }
     
     yield self if block_given?
@@ -65,7 +66,7 @@ class RingMenu < Chingu::GameState
     end
   end
   
-  def act!
+  def perform_action
     @items[@index].perform_action
   end
   
