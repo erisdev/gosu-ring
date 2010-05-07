@@ -1,7 +1,8 @@
 require 'chingu'
 
 class RingMenu < Chingu::GameState
-  autoload :Icon, 'ring_menu/icon'
+  autoload :Icon,     'ring_menu/icon'
+  autoload :RingList, 'ring_menu/ring_list'
   
   module Z
     BACKGROUND = 0
@@ -29,7 +30,8 @@ class RingMenu < Chingu::GameState
     
     @opaque   = options[:opaque]
     @rotation = options[:icon_rotation]
-    @radius   = options[:radius]
+    @x_radius = options[:x_radius] || options[:radius]
+    @y_radius = options[:y_radius] || options[:radius]
     @z_base   = options[:z_base]
     
     @cx = options[:x] || $window.width  / 2
@@ -41,8 +43,7 @@ class RingMenu < Chingu::GameState
     @caption = Chingu::Text.new '',
       :zorder => @z_base + Z::CAPTION
     
-    @items   = []
-    @index   = 0
+    @items   = RingList[]
     @step    = 0
     
     # FIXME when chingu is updated, just pass :center => 0.5
@@ -102,30 +103,28 @@ class RingMenu < Chingu::GameState
     end
   end
   
+  # utility methods
+  
+  def close_enough?; @step.abs < 0.1 end
+  
   # input methods
   
-  def left?; left! if @index == @step end
+  def left?; left! if close_enough? end
   def left!
-    @index -= 1
-    if @index < 0
-      @index += @count
-      @step  += @count
-    end
+    @items.rotate! +1
+    @step -= 1
     update_caption!
   end
   
-  def right?; right! if @index == @step end
+  def right?; right! if close_enough? end
   def right!
-    @index += 1
-    if @index >= @count
-      @index -= @count
-      @step  -= @count
-    end
+    @items.rotate! -1
+    @step += 1
     update_caption!
   end
   
   def perform_action
-    @items[@index].perform_action
+    @items.first.perform_action
   end
   
   # chingu methods
@@ -134,11 +133,11 @@ class RingMenu < Chingu::GameState
     super
     
     # update rotation step
-    if (@step - @index).abs < 0.1
-      @step = @index
-    elsif @step < @index
+    if close_enough?
+      @step = 0
+    elsif @step < 0
       @step += 0.1
-    elsif @step > @index
+    elsif @step > 0
       @step -= 0.1
     end
     
@@ -149,13 +148,13 @@ class RingMenu < Chingu::GameState
     # position cursor
     if @cursor
       @cursor.x = @cx
-      @cursor.y = @cy - @radius
+      @cursor.y = @cy - @y_radius
     end
     
     # position icons
     @items.each do |icon|
-      icon.x = @cx + @radius * Math.sin(this_angle)
-      icon.y = @cy - @radius * Math.cos(this_angle)
+      icon.x = @cx + @x_radius * Math.sin(this_angle)
+      icon.y = @cy - @y_radius * Math.cos(this_angle)
       
       # turn icons if desired
       icon.angle = @rotation * this_angle.radians_to_degrees
@@ -165,7 +164,7 @@ class RingMenu < Chingu::GameState
   end
   
   def update_caption!
-    @caption.text = @items[@index].title
+    @caption.text = @items.first.title
     @caption.x    = @cx
     @caption.y    = @cy
   end
@@ -184,7 +183,7 @@ class RingMenu < Chingu::GameState
     @cursor.draw if @cursor
     
     # draw caption if selected item is at the front
-    @caption.draw if @index == @step
+    @caption.draw if close_enough?
   end
   
 end
