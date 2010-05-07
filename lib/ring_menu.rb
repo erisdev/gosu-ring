@@ -23,6 +23,9 @@ class RingMenu < Chingu::GameState
     :z_base   => 100
   }
   
+  attr_accessor :x_radius, :y_radius
+  attr_accessor :z_base
+  
   def initialize options = {}, &block
     super
     
