@@ -19,7 +19,15 @@ class RingDemo < Chingu::Window
     
     self.caption = 'Ring Menu'
     self.input   = {
-      :r      => :switch_rotation,
+      :q => proc { @menu.instance_eval { @rotation -= 1 } },
+      :w => proc { @menu.instance_eval { @rotation += 1 } },
+      
+      :holding_a => proc { @menu.x_radius -= 8 },
+      :holding_s => proc { @menu.x_radius += 8 },
+      
+      :holding_z => proc { @menu.y_radius -= 8 },
+      :holding_x => proc { @menu.y_radius += 8 },
+      
       :escape => :close
     }
     
@@ -28,7 +36,8 @@ class RingDemo < Chingu::Window
     cursor = Gosu::Image.new(self, 'data/cursor.png')
     icons  = Gosu::Image.load_tiles(self, 'data/icons.png', 16, 16, false)
     
-    @menu = RingMenu.new :radius => 60, :opaque => false, :icon_rotation => 1 do |m|
+    @menu = RingMenu.new :radius => 60, :opaque => false, :icon_rotation => 1, 
+      :x_radius => 100, :y_radius => 50 do |m|
       m.background :from => 0xd0ffffff, :to => 0xd0000000
       m.cursor cursor, :scale => 2
       m.font 'Helvetica', 24
