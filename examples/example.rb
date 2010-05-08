@@ -50,22 +50,22 @@ class RingDemo < Chingu::Window
       m.item('Ball',    icons[5], :scale => 2)
     end
     
-    @status = Chingu::Text.create 'Press R to change icon rotation',
-      :height => 18
+    @messages = [
+      'R, Q : icon rotation factor ',
+      'A, S : horizontal radius ',
+      'Z, X : vertical radius ',
+    ].map.with_index do |message, line|
+      Chingu::Text.create message,
+        :x      => 18,
+        :y      => 18 * (line + 1),
+        :height => 18
+    end
     
     push_game_state BackgroundState.new
     push_game_state @menu
     
   end
   
-  def switch_rotation
-    @menu.instance_eval do
-      if @rotation >= 1 then @rotation  = -1
-      else                   @rotation +=  1
-      end
-    end
-    @status.text = 'Icon rotation: %d' % @menu.instance_eval { @rotation }
-  end
 end
 
 RingDemo.new.show
