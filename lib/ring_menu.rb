@@ -1,4 +1,5 @@
 require 'chingu'
+require 'ring_menu/hax'
 
 class RingMenu < Chingu::GameState
   autoload :Icon,     'ring_menu/icon'
@@ -20,11 +21,9 @@ class RingMenu < Chingu::GameState
     :opaque   => true,
     :rotation => false,
     :radius   => 50,
-    :z_base   => 100
   }
   
   attr_accessor :x_radius, :y_radius
-  attr_accessor :z_base
   
   def initialize options = {}, &block
     super
@@ -35,7 +34,6 @@ class RingMenu < Chingu::GameState
     @rotation = options[:icon_rotation]
     @x_radius = options[:x_radius] || options[:radius]
     @y_radius = options[:y_radius] || options[:radius]
-    @z_base   = options[:z_base]
     
     @cx = options[:x] || $window.width  / 2
     @cy = options[:y] || $window.height / 2
@@ -44,7 +42,7 @@ class RingMenu < Chingu::GameState
     @rotation = 0 if not @rotation
     
     @caption = Chingu::Text.new '',
-      :zorder => @z_base + Z::CAPTION
+      :zorder => Z::CAPTION
     
     @items   = RingList[]
     @step    = 0
@@ -67,7 +65,7 @@ class RingMenu < Chingu::GameState
   
   def item caption, image, options = {}, &block
     options.merge! \
-      :zorder => @z_base + Z::ICONS
+      :zorder => Z::ICONS
     
     # FIXME when chingu is updated, this should just use the create method
     @items << Icon.new(caption, image, options, &block)
@@ -78,8 +76,8 @@ class RingMenu < Chingu::GameState
   def background bg
     @background = case bg
     when Gosu::Color then bg
-    when Hash        then bg.merge :zorder => @z_base + Z::BACKGROUND
-    when Array       then { :zorder => @z_base + Z::BACKGROUND, :colors => bg }
+    when Hash        then bg.merge :zorder => Z::BACKGROUND
+    when Array       then { :zorder => Z::BACKGROUND, :colors => bg }
     else Gosu::Color.new(bg)
     end
   end
@@ -87,7 +85,7 @@ class RingMenu < Chingu::GameState
   def cursor image, options = {}
     options.merge! \
       :image  => image,
-      :zorder => @z_base + Z::CURSOR
+      :zorder => Z::CURSOR
     @cursor = Chingu::GameObject.new options
   end
   
@@ -173,14 +171,17 @@ class RingMenu < Chingu::GameState
   end
   
   def draw
-    super
-    
     # draw the previous game state if it is desired
-    previous_game_state.draw unless @opaque
+    unless @opaque
+      previous_game_state.draw
+      $window.flush
+    end
+    
+    super
     
     # draw the background
     # FIXME zorder is ignored by chingu's GFX#fill for colors
-    $window.fill @background, @z_base + Z::BACKGROUND if @background
+    $window.fill @background, Z::BACKGROUND if @background
     
     # draw a cursor if there is one
     @cursor.draw if @cursor

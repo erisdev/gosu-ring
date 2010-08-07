@@ -64,6 +64,9 @@ class RingDemo < Chingu::Window
     push_game_state BackgroundState.new
     push_game_state @menu
     
+    # needs to be updated at least once for created objects to exist
+    previous_game_state.update
+    
   end
   
 end
