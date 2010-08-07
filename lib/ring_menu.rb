@@ -19,6 +19,7 @@ class RingMenu < Chingu::GameState
   
   DEFAULTS = {
     :opaque   => true,
+    :modal    => true,
     :rotation => false,
     :radius   => 50,
   }
@@ -31,6 +32,7 @@ class RingMenu < Chingu::GameState
     options = DEFAULTS.merge options
     
     @opaque   = options[:opaque]
+    @modal    = options[:modal]
     @rotation = options[:icon_rotation]
     @x_radius = options[:x_radius] || options[:radius]
     @y_radius = options[:y_radius] || options[:radius]
@@ -131,6 +133,8 @@ class RingMenu < Chingu::GameState
   # chingu methods
   
   def update
+    previous_game_state.update unless @modal
+    
     super
     
     # update rotation step
